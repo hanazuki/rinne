@@ -1,0 +1,46 @@
+= rinne(1)
+Kasumi Hanazuki
+:doctype: manpage
+:mansource: github.com/hanazuki/rinne
+
+== Name
+rinne - Manages AWS Access Keys in GitHub Actions Secrets
+
+== Synopsis
+*rinne* [--config _CONFPATH_] [--jpath _JPATH_]... bootstrap [_CDK-OPTION_]... [ENVIRONMENT]...
+
+*rinne* [--config _CONFPATH_] [--jpath _JPATH_]... deploy [_CDK-OPTION_]...
+
+== Descriprion
+*rinne* manages AWS Access Keys in GitHub Actions Secrets and configures automated Access Key rotation.
+
+== Configuration
+
+rinne reads configuraion file written in https://jsonnet.org[Jsonnet templating language]. The configuration file must represent a JSON object in the following structure:
+
+```
+{
+  githubTokenProperty: '/property/name',
+
+  repositories: {
+    'owner/repo': {
+      policies: {
+        name: [
+          {
+            Action: '...',
+            Resource: 'arn:...',
+          },
+          ...
+        ],
+        ...
+      }
+    },
+    ...
+  },
+}
+
+```
+
+https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_core.StackProps.html#properties[CDK stack properties], including `stackName`, `env` and `tags`, can also be specified in the configuration object.
+
+rinne obtains GitHub Token from AWS Systems Manager Parameter Store.

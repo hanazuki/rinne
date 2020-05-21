@@ -1,0 +1,10 @@
+{
+  "name": "rinne-example",
+  "private": true,
+  "scripts": {
+    "deploy": "rinne deploy --jpath lib"
+  },
+  "dependencies": {
+    "rinne": "^0.1.0"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "rinne",
+  "version": "0.0.0",
+  "description": "Manages AWS Access Keys in GitHub Actions Secrets",
+  "bugs": "https://github.com/hanazuki/rinne/issues",
+  "homepage": "https://github.com/hanazuki/rinne",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hanazuki/rinne"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "install": "(test -e function/main.js || tsc) && ncc build -m -e aws-sdk -o ncc.out function/main.js",
+    "watch": "tsc -w"
+  },
+  "files": [
+    "*.adoc",
+    "*.js",
+    "*.d.ts",
+    "bin/",
+    "function/",
+    "lib/",
+    "man/"
+  ],
+  "main": "./lib/stack.js",
+  "bin": {
+    "rinne": "./bin/rinne.js",
+    "rinne-synth": "./bin/rinne-synth.js"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-events": "^1.36.0",
+    "@aws-cdk/aws-events-targets": "^1.36.0",
+    "@aws-cdk/aws-iam": "^1.36.0",
+    "@aws-cdk/aws-lambda": "^1.36.0",
+    "@aws-cdk/aws-ssm": "^1.36.0",
+    "@aws-cdk/core": "^1.36.0",
+    "@hanazuki/node-jsonnet": "^0.3.0",
+    "@octokit/rest": "^17.6.0",
+    "@zeit/ncc": "^0.22.1",
+    "aws-cdk": "^1.40.0",
+    "lodash.sortby": "^4.7.0",
+    "shell-escape": "^0.2.0",
+    "source-map-support": "^0.5.19",
+    "tweetsodium": "0.0.5"
+  },
+  "devDependencies": {
+    "@types/lodash.sortby": "^4.7.6",
+    "@types/node": "^13.13.4",
+    "@types/shell-escape": "^0.2.0",
+    "ts-node": "^8.10.1",
+    "aws-sdk": "^2.664.0",
+    "typescript": "^3.8.3"
+  }
+}

@@ -1,0 +1,6 @@
+/node_modules/
+/*.out/
+*.js
+*.d.ts
+*.[1-9]
+*.tgz
