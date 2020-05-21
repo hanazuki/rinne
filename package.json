@@ -1,6 +1,6 @@
 {
   "name": "rinne",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Manages AWS Access Keys in GitHub Actions Secrets",
   "bugs": "https://github.com/hanazuki/rinne/issues",
   "homepage": "https://github.com/hanazuki/rinne",
@@ -25,8 +25,8 @@
   ],
   "main": "./lib/stack.js",
   "bin": {
-    "rinne": "./bin/rinne.js",
-    "rinne-synth": "./bin/rinne-synth.js"
+    "rinne": "./bin/rinne",
+    "rinne-synth": "./bin/rinne-synth"
   },
   "dependencies": {
     "@aws-cdk/aws-events": "^1.36.0",
