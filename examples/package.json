@@ -2,9 +2,9 @@
   "name": "rinne-example",
   "private": true,
   "scripts": {
-    "deploy": "rinne deploy --jpath lib"
+    "deploy": "rinne deploy --jpath lib --config config/rinne.jsonnet"
   },
   "dependencies": {
-    "rinne": "^0.1.0"
+    "rinne": "*"
   }
 }
