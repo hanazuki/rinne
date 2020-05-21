@@ -1,6 +1,6 @@
 {
   "name": "rinne",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Manages AWS Access Keys in GitHub Actions Secrets",
   "bugs": "https://github.com/hanazuki/rinne/issues",
   "homepage": "https://github.com/hanazuki/rinne",
