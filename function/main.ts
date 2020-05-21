@@ -14,7 +14,7 @@ const ssm = new AWS.SSM();
 
 const tokenParam = process.env['GitHubTokenParameter'];
 if(!tokenParam) {
-  throw 'GitHubTokenParameter is not set';
+  throw new Error('GitHubTokenParameter is not set');
 }
 
 const octokit = ssm.getParameter({
