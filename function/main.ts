@@ -7,6 +7,7 @@ const sortBy = require('lodash.sortby');
 interface Event {
   repo: string;
   user: string;
+  destroying?: boolean;
 }
 
 const iam = new AWS.IAM();
@@ -36,7 +37,7 @@ const updateSecret = async (owner: string, repo: string, secret_name: string, va
   const encryptedBytes = sodium.seal(messageBytes, keyBytes);
   const encryptedValue = Buffer.from(encryptedBytes).toString('base64');
 
-  await (await octokit).actions.createOrUpdateSecretForRepo({
+  await (await octokit).actions.createOrUpdateRepoSecret({
     owner,
     repo,
     secret_name,
@@ -46,10 +47,27 @@ const updateSecret = async (owner: string, repo: string, secret_name: string, va
   console.log(`Updated GitHub Actions secret ${secret_name} for ${owner}/${repo}`);
 }
 
+const deleteSecret = async (owner: string, repo: string, secret_name: string): Promise<void> => {
+  await (await octokit).actions.deleteRepoSecret({
+    owner,
+    repo,
+    secret_name,
+  })
+  console.log(`Deleted GitHub Actions secret ${secret_name} for ${owner}/${repo}`);
+}
+
 const EXPIRY = 6 * 60 * 60 * 1000;
 
 export const handler = async (event: Event): Promise<any> => {
   const [owner, repo] = event.repo.split('/', 2);
+
+  if(event.destroying) {
+    await Promise.all([
+      deleteSecret(owner, repo, 'AWS_ACCESS_KEY_ID'),
+      deleteSecret(owner, repo, 'AWS_SECRET_ACCESS_KEY'),
+    ])
+    return {};
+  }
 
   console.log(`Starting key rotation for GitHub repository ${owner}/${repo} and IAM user ${event.user}.`);
 
@@ -82,4 +100,5 @@ export const handler = async (event: Event): Promise<any> => {
     updateSecret(owner, repo, 'AWS_ACCESS_KEY_ID', newKey.AccessKey.AccessKeyId, await pubkey),
     updateSecret(owner, repo, 'AWS_SECRET_ACCESS_KEY', newKey.AccessKey.SecretAccessKey, await pubkey),
   ])
+  return {};
 }

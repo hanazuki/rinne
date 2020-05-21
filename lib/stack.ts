@@ -27,7 +27,7 @@ exports.onEvent = async function onEvent(event) {
   const {RequestType, ResourceProperties: {FunctionName, Payload}} = event;
 
   if (RequestType === 'Delete') {
-    return {};
+    Payload.destroying = true;
   }
 
   const resp = await lambda.invoke({
@@ -123,13 +123,13 @@ export class RinneStack extends cdk.Stack {
       const payload = {
         repo: reponame,
         user: user.userName,
-      }
+      };
 
       cron.addTarget(new targets.LambdaFunction(updater, {
         event: events.RuleTargetInput.fromObject(payload),
       }));
 
-      new cfn.CustomResource(this, `Init/${reponame}`, {
+      const init = new cfn.CustomResource(this, `Init/${reponame}`, {
         provider: initProvider,
         properties: {
           FunctionName: updater.functionName,
@@ -137,6 +137,7 @@ export class RinneStack extends cdk.Stack {
         }
       });
 
+      cron.node.addDependency(init);
     }
   }
 }
