@@ -6,7 +6,7 @@ import { RinneStack } from '..';
 
 const jsonnet = new Jsonnet();
 
-let conffile: string | undefined = void(0);
+let conffile: string | null = null;
 
 const args = process.argv.slice(2);
 for(let i = 0; i < args.length; ++i) {
@@ -15,9 +15,7 @@ for(let i = 0; i < args.length; ++i) {
       conffile = args[++i];
       break;
     case '--jpath':
-      const jpath = path.resolve(process.cwd(), args[++i]);
-      jsonnet.addJpath(jpath);
-      console.log(jpath);
+      jsonnet.addJpath(path.resolve(process.cwd(), args[++i]));
       break;
     default:
       console.error(`Unknown option ${args[i]}`);
@@ -25,11 +23,7 @@ for(let i = 0; i < args.length; ++i) {
   }
 }
 
-if(!conffile) {
-  usage();
-}
-
-jsonnet.evaluateFile(conffile).then(json => {
+jsonnet.evaluateFile(conffile ?? 'config/rinne.jsonnet').then(json => {
   const app = new cdk.App();
   const stack = new RinneStack(app, 'Rinne', JSON.parse(json));
   return stack;
