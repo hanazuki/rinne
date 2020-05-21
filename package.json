@@ -1,7 +1,7 @@
 {
   "name": "rinne",
   "version": "0.0.2",
-  "description": "Manages AWS Access Keys in GitHub Actions Secrets",
+  "description": "Manages AWS access keys in GitHub Actions Secrets",
   "bugs": "https://github.com/hanazuki/rinne/issues",
   "homepage": "https://github.com/hanazuki/rinne",
   "repository": {
@@ -20,8 +20,7 @@
     "*.d.ts",
     "bin/",
     "function/",
-    "lib/",
-    "man/"
+    "lib/"
   ],
   "main": "./lib/stack.js",
   "bin": {
