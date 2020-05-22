@@ -34,7 +34,7 @@ Rinne reads configuraion file written in [Jsonnet templating language](https://j
   repositories: {
     'owner/repo': {
       # Managed policies to attach
-      managed_policies: [
+      managedPolicies: [
         'arn:aws:iam::aws:policy/...',
         # ...
       ],
