@@ -10,8 +10,8 @@
   },
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
-    "install": "(test -e function/main.js || tsc) && ncc build -m -e aws-sdk -o ncc.out function/main.js",
+    "prepare": "tsc",
+    "install": "(test -e function/main.js || npm run prepare) && ncc build -m -e aws-sdk -o ncc.out function/main.js",
     "watch": "tsc -w"
   },
   "files": [
