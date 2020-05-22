@@ -1,5 +1,4 @@
-release:
+build:
 	npm run build
-	npm pack --dry-run
 
-.PHONY: release
+.PHOYN: build

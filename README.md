@@ -21,18 +21,23 @@ rinne reads configuraion file written in [Jsonnet templating language](https://j
 
   repositories: {
     'owner/repo': {
+      managed_policies: [
+        'arn:aws:iam::aws:policy/...',
+        # ...
+      ],
+
       policies: {
         name: [
           {
             Action: '...',
             Resource: 'arn:...',
           },
-          ...
+          # ...
         ],
-        ...
+        # ...
       }
     },
-    ...
+    # ...
   },
 }
 

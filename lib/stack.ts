@@ -10,7 +10,8 @@ import * as ssm from '@aws-cdk/aws-ssm';
 import * as targets from '@aws-cdk/aws-events-targets';
 
 interface RepositoryConfig {
-  policies: {[name: string]: any[]};
+  managedPolicies?: string[];
+  policies?: {[name: string]: any[]};
 }
 
 interface GitHubToken {
@@ -57,13 +58,23 @@ export class RinneStack extends cdk.Stack {
     for(const [reponame, repo] of Object.entries(props.repositories)) {
       const user = new iam.User(this, `GH/${reponame}`);
 
-      for(const [polname, stmts] of Object.entries(repo.policies)) {
-        user.attachInlinePolicy(
-          new iam.Policy(this, `GH/${reponame}/${polname}`, {
-            policyName: polname,
-            statements: stmts.map(iam.PolicyStatement.fromJson),
-          })
-        );
+      if(repo.managedPolicies) {
+        for(const polarn of repo.managedPolicies) {
+          user.addManagedPolicy(
+            iam.ManagedPolicy.fromManagedPolicyArn(this, `GH/${reponame}/${polarn}`, polarn)
+          );
+        }
+      }
+
+      if(repo.policies) {
+        for(const [polname, stmts] of Object.entries(repo.policies)) {
+          user.attachInlinePolicy(
+            new iam.Policy(this, `GH/${reponame}/${polname}`, {
+              policyName: polname,
+              statements: stmts.map(iam.PolicyStatement.fromJson),
+            })
+          );
+        }
       }
 
       users[reponame] = user;

@@ -11,7 +11,9 @@
   "license": "MIT",
   "scripts": {
     "prepare": "tsc",
-    "install": "(test -e function/main.js || npm run prepare) && ncc build -m -e aws-sdk -o ncc.out function/main.js",
+    "install": "(test -e function/main.js || npm run prepare) && npm run ncc",
+    "ncc": "ncc build -m -e aws-sdk -o ncc.out function/main.js",
+    "build": "npm run prepare && npm run ncc",
     "watch": "tsc -w"
   },
   "files": [
