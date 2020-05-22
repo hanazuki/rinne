@@ -11,7 +11,7 @@
 
 rinne reads configuraion file written in [Jsonnet templating language](https://jsonnet.org). The configuration file must represent a JSON object in the following structure:
 
-```
+```jsonnet
 {
   githubToken: {
     # rinne will obtain GitHub token from this SSM parameter
