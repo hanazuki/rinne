@@ -13,7 +13,11 @@ rinne reads configuraion file written in [Jsonnet templating language](https://j
 
 ```
 {
-  githubTokenParameter: '/parameter/name',
+  githubToken: {
+    # rinne will obtain GitHub token from this SSM parameter
+    parameter: '/parameter/name',
+    keyId: '1234abcd-12ab-34cd-56ef-1234567890ab',  # optional
+  },
 
   repositories: {
     'owner/repo': {
@@ -35,8 +39,6 @@ rinne reads configuraion file written in [Jsonnet templating language](https://j
 ```
 
 [CDK stack properties](https://docs.aws.amazon.com/cdk/api/latest/docs/@aws-cdk_core.StackProps.html#properties), including `stackName`, `env` and `tags`, can also be specified in the configuration object.
-
-rinne obtains GitHub Token from AWS Systems Manager Parameter Store.
 
 ## Further reading
 - Sei Seino, "時載りリンネ!" (_Tokinori Rinne!_), vol. 1, [ISBN 9784044732011](https://sneakerbunko.jp/product/tokinori/200704000021.html)

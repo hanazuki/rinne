@@ -13,8 +13,13 @@ interface RepositoryConfig {
   policies: {[name: string]: any[]};
 }
 
+interface GitHubToken {
+  parameter: string;
+  keyId?: string;
+}
+
 interface RinneProps extends cdk.StackProps {
-  githubTokenParameter: string;
+  githubToken: GitHubToken;
   logRetentionDays?: number;
   repositories: {[name: string]: RepositoryConfig};
 }
@@ -64,6 +69,16 @@ export class RinneStack extends cdk.Stack {
       users[reponame] = user;
     };
 
+    const parameter = props.githubToken.parameter;
+    const parameterArn = parameter.startsWith('arn:')
+                       ? parameter
+                       : cdk.Arn.format({
+                         service: 'ssm',
+                         resource: 'parameter',
+                         resourceName: parameter,
+                         sep: '',
+                       }, this);
+
     const updater = new lambda.Function(this, 'UpdaterFunction', {
       runtime: lambda.Runtime.NODEJS_10_X,
       handler: 'index.handler',
@@ -71,7 +86,7 @@ export class RinneStack extends cdk.Stack {
       memorySize: 1024,
       timeout: cdk.Duration.seconds(10),
       environment: {
-        GitHubTokenParameter: props.githubTokenParameter,
+        GitHubTokenParameter: props.githubToken.parameter,
       },
       logRetention: props.logRetentionDays ?? 30,
       initialPolicy: [
@@ -87,17 +102,30 @@ export class RinneStack extends cdk.Stack {
           actions: [
             'ssm:GetParameter',
           ],
-          resources: [
-            cdk.Arn.format({
-              service: 'ssm',
-              resource: 'parameter',
-              resourceName: props.githubTokenParameter,
-              sep: '',
-            }, this),
-          ],
+          resources: [parameterArn],
         }),
       ],
     });
+
+    const keyId = props.githubToken.keyId;
+    if(keyId) {
+      const keyArn = keyId.startsWith('arn:')
+                   ? keyId
+                   : cdk.Arn.format({
+                     service: 'kms',
+                     resource: 'key',
+                     resourceName: keyId,
+                   }, this);
+
+      updater.addToRolePolicy(
+        new iam.PolicyStatement({
+          actions: [
+            'kms:Decrypt',
+          ],
+          resources: [keyArn],
+        })
+      );
+    }
 
     const initProvider = new cr.Provider(this, 'InitProvider', {
       onEventHandler: new lambda.SingletonFunction(this, 'InitHandler', {
