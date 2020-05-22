@@ -1,0 +1,2 @@
+# TODO
+- Validate configuration

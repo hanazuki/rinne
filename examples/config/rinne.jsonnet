@@ -6,7 +6,9 @@ local s3 = import "s3.libsonnet";
     region: 'us-east-1',
   },
 
-  githubTokenParameter: '/rinne/token',
+  githubToken: {
+    parameter: '/rinne/token',
+  }
 
   repositories: {
     'hanazuki/rinne': {
