@@ -49,6 +49,10 @@ exports.onEvent = async function onEvent(event) {
   return {Data: JSON.parse(resp.Payload)};
 }`;
 
+export namespace Tags {
+  export const GitHubRepository = 'rinne.hanazuki.dev/githubRepository';
+}
+
 export class RinneStack extends cdk.Stack {
 
   constructor(scope: cdk.Construct, id: string, props: RinneProps) {
@@ -57,6 +61,7 @@ export class RinneStack extends cdk.Stack {
     const users: {[name: string]: iam.User} = {};
     for(const [reponame, repo] of Object.entries(props.repositories)) {
       const user = new iam.User(this, `GH/${reponame}`);
+      cdk.Tag.add(user, Tags.GitHubRepository, reponame);
 
       if(repo.managedPolicies) {
         for(const polarn of repo.managedPolicies) {
