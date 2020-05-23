@@ -1,11 +1,16 @@
 # Rinne
+## Name
+rinne - manage AWS credentials for GitHub Actions
+
 ## Synopsis
 **rinne** [--config _CONFPATH_] [--jpath _JPATH_]... bootstrap [_CDK-OPTION_]... [ENVIRONMENT]...
 
 **rinne** [--config _CONFPATH_] [--jpath _JPATH_]... deploy [_CDK-OPTION_]...
 
 ## Descriprion
-**Rinne** manages AWS access keys in GitHub Actions Secrets and configures automated access key rotation.
+**Rinne** manages AWS access keys for GitHub Actions and configures automated access key rotation.
+
+According to the given configuration, Rinne creates an IAM user for each GitHub repository with a set of permissions, and stores an access key for the user as GitHub Actions secrets for the repository. The access keys are periodically rotates without invoking the *rinne* command again.
 
 ## Configuration
 
@@ -25,9 +30,13 @@ Rinne reads configuraion file written in [Jsonnet templating language](https://j
     # ...
   }
 
+  # Configure GitHub personal access token to update GitHub Actions secrets.
+  # This token needs `repo` scope to manage private repositories and `public_repo` scope for public ones.
   githubToken: {
     # Rinne will obtain GitHub token from this SSM parameter
     parameter: '/parameter/name',
+
+    # If specified, kms:Decrypt on this key is granted to Rinne.
     keyId: '1234abcd-12ab-34cd-56ef-1234567890ab',  # optional
   },
 
@@ -55,7 +64,6 @@ Rinne reads configuraion file written in [Jsonnet templating language](https://j
     # ...
   },
 }
-
 ```
 
 ## Further reading
