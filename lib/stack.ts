@@ -6,12 +6,11 @@ import * as cfn from '@aws-cdk/aws-cloudformation';
 import * as events from '@aws-cdk/aws-events';
 import * as iam from '@aws-cdk/aws-iam';
 import * as lambda from '@aws-cdk/aws-lambda';
-import * as ssm from '@aws-cdk/aws-ssm';
 import * as targets from '@aws-cdk/aws-events-targets';
 
 interface RepositoryConfig {
   managedPolicies?: string[];
-  policies?: {[name: string]: any[]};
+  policies?: { [name: string]: any[] };
 }
 
 interface GitHubToken {
@@ -22,7 +21,7 @@ interface GitHubToken {
 interface RinneProps extends cdk.StackProps {
   githubToken: GitHubToken;
   logRetentionDays?: number;
-  repositories: {[name: string]: RepositoryConfig};
+  repositories: { [name: string]: RepositoryConfig };
 }
 
 const initHandlerCode = `'use strict';
@@ -58,21 +57,21 @@ export class RinneStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props: RinneProps) {
     super(scope, id, props);
 
-    const users: {[name: string]: iam.User} = {};
-    for(const [reponame, repo] of Object.entries(props.repositories)) {
+    const users: { [name: string]: iam.User } = {};
+    for (const [reponame, repo] of Object.entries(props.repositories)) {
       const user = new iam.User(this, `GH/${reponame}`);
       cdk.Tag.add(user, Tags.GitHubRepository, reponame);
 
-      if(repo.managedPolicies) {
-        for(const polarn of repo.managedPolicies) {
+      if (repo.managedPolicies) {
+        for (const polarn of repo.managedPolicies) {
           user.addManagedPolicy(
             iam.ManagedPolicy.fromManagedPolicyArn(this, `GH/${reponame}/${polarn}`, polarn)
           );
         }
       }
 
-      if(repo.policies) {
-        for(const [polname, stmts] of Object.entries(repo.policies)) {
+      if (repo.policies) {
+        for (const [polname, stmts] of Object.entries(repo.policies)) {
           user.attachInlinePolicy(
             new iam.Policy(this, `GH/${reponame}/${polname}`, {
               policyName: polname,
@@ -87,13 +86,13 @@ export class RinneStack extends cdk.Stack {
 
     const parameter = props.githubToken.parameter;
     const parameterArn = parameter.startsWith('arn:')
-                       ? parameter
-                       : cdk.Arn.format({
-                         service: 'ssm',
-                         resource: 'parameter',
-                         resourceName: parameter,
-                         sep: '',
-                       }, this);
+      ? parameter
+      : cdk.Arn.format({
+        service: 'ssm',
+        resource: 'parameter',
+        resourceName: parameter,
+        sep: '',
+      }, this);
 
     const updater = new lambda.Function(this, 'UpdaterFunction', {
       runtime: lambda.Runtime.NODEJS_10_X,
@@ -124,14 +123,14 @@ export class RinneStack extends cdk.Stack {
     });
 
     const keyId = props.githubToken.keyId;
-    if(keyId) {
+    if (keyId) {
       const keyArn = keyId.startsWith('arn:')
-                   ? keyId
-                   : cdk.Arn.format({
-                     service: 'kms',
-                     resource: 'key',
-                     resourceName: keyId,
-                   }, this);
+        ? keyId
+        : cdk.Arn.format({
+          service: 'kms',
+          resource: 'key',
+          resourceName: keyId,
+        }, this);
 
       updater.addToRolePolicy(
         new iam.PolicyStatement({
@@ -163,7 +162,7 @@ export class RinneStack extends cdk.Stack {
       schedule: events.Schedule.rate(cdk.Duration.hours(1)),
     });
 
-    for(const [reponame, user] of Object.entries(users)) {
+    for (const [reponame, user] of Object.entries(users)) {
       const payload = {
         repo: reponame,
         user: user.userName,

@@ -20,7 +20,7 @@ try {
       stdio: 'inherit',
     }
   )
-} catch(e) {
+} catch (e) {
   console.log(e.message);
   process.exit(e.status);
 }
@@ -35,8 +35,8 @@ function parseArgs(args: string[]): Args {
   const synthArgs = [];
   const cdkArgs = [];
 
-  for(let i = 0; i < args.length; ++i) {
-    if(args[i] == '--config' || args[i] == '--jpath') {
+  for (let i = 0; i < args.length; ++i) {
+    if (args[i] == '--config' || args[i] == '--jpath') {
       synthArgs.push(args[i], args[i + 1]);
       ++i;
     } else {

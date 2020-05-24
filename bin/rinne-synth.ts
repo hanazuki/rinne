@@ -9,8 +9,8 @@ const jsonnet = new Jsonnet();
 let conffile: string | null = null;
 
 const args = process.argv.slice(2);
-for(let i = 0; i < args.length; ++i) {
-  switch(args[i]) {
+for (let i = 0; i < args.length; ++i) {
+  switch (args[i]) {
     case '--config':
       conffile = args[++i];
       break;

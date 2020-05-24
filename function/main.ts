@@ -1,8 +1,7 @@
-import {Octokit} from '@octokit/rest';
+import { Octokit } from '@octokit/rest';
 import * as AWS from 'aws-sdk';
 import * as sodium from 'tweetsodium';
-
-const sortBy = require('lodash.sortby');
+import sortBy = require('lodash.sortby');
 
 interface Event {
   repo: string;
@@ -14,13 +13,13 @@ const iam = new AWS.IAM();
 const ssm = new AWS.SSM();
 
 const tokenParam = process.env['GitHubTokenParameter'];
-if(!tokenParam) {
+if (!tokenParam) {
   throw new Error('GitHubTokenParameter is not set');
 }
 
 const octokit = ssm.getParameter({
   Name: tokenParam, WithDecryption: true
-}).promise().then(token => new Octokit({auth: token.Parameter?.Value}));
+}).promise().then(token => new Octokit({ auth: token.Parameter?.Value }));
 
 interface Pubkey {
   key_id: string;
@@ -28,7 +27,7 @@ interface Pubkey {
 }
 
 const getPubkey = async (owner: string, repo: string): Promise<Pubkey> => {
-  return (await (await octokit).actions.getPublicKey({owner, repo})).data;
+  return (await (await octokit).actions.getPublicKey({ owner, repo })).data;
 }
 
 const updateSecret = async (owner: string, repo: string, secret_name: string, value: string, pubkey: Pubkey): Promise<void> => {
@@ -61,7 +60,7 @@ const EXPIRY = 6 * 60 * 60 * 1000;
 export const handler = async (event: Event): Promise<any> => {
   const [owner, repo] = event.repo.split('/', 2);
 
-  if(event.destroying) {
+  if (event.destroying) {
     await Promise.all([
       deleteSecret(owner, repo, 'AWS_ACCESS_KEY_ID'),
       deleteSecret(owner, repo, 'AWS_SECRET_ACCESS_KEY'),
@@ -72,15 +71,15 @@ export const handler = async (event: Event): Promise<any> => {
   console.log(`Starting key rotation for GitHub repository ${owner}/${repo} and IAM user ${event.user}.`);
 
   const accessKeys = sortBy(
-    (await iam.listAccessKeys({UserName: event.user}).promise()).AccessKeyMetadata,
+    (await iam.listAccessKeys({ UserName: event.user }).promise()).AccessKeyMetadata,
     (k: AWS.IAM.AccessKeyMetadata) => k.CreateDate
   );
   const currentKey = accessKeys.pop();
   const expiringKey = accessKeys.pop();
 
-  if(currentKey?.AccessKeyId) {
+  if (currentKey?.AccessKeyId && currentKey.CreateDate) {
     const keyAge = Date.now() - currentKey.CreateDate.getTime();
-    if(keyAge < EXPIRY / 2) {
+    if (keyAge < EXPIRY / 2) {
       console.log(`Current access key ${currentKey.AccessKeyId} is ${Math.floor(keyAge / 1000)}s old; skipping rotation.`);
       return;
     }
@@ -88,12 +87,12 @@ export const handler = async (event: Event): Promise<any> => {
 
   const pubkey = getPubkey(owner, repo);
 
-  if(expiringKey?.AccessKeyId) {
-    await iam.deleteAccessKey({UserName: event.user, AccessKeyId: expiringKey.AccessKeyId}).promise();
+  if (expiringKey?.AccessKeyId) {
+    await iam.deleteAccessKey({ UserName: event.user, AccessKeyId: expiringKey.AccessKeyId }).promise();
     console.log(`Deleted access key ${expiringKey.AccessKeyId}.`);
   }
 
-  const newKey = await iam.createAccessKey({UserName: event.user}).promise();
+  const newKey = await iam.createAccessKey({ UserName: event.user }).promise();
   console.log(`Created access key ${newKey.AccessKey.AccessKeyId}.`);
 
   await Promise.all([
