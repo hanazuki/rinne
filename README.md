@@ -3,14 +3,28 @@
 rinne - manage AWS credentials for GitHub Actions
 
 ## Synopsis
-**rinne** [--config _CONFPATH_] [--jpath _JPATH_]... bootstrap [_CDK-OPTION_]... [ENVIRONMENT]...
+**rinne** [--config _CONFPATH_] [--jpath _JPATH_]... bootstrap [_CDK-OPTION_]... [_ENVIRONMENT_]...
 
 **rinne** [--config _CONFPATH_] [--jpath _JPATH_]... deploy [_CDK-OPTION_]...
 
 ## Descriprion
 **Rinne** manages AWS access keys for GitHub Actions and configures automated access key rotation.
 
-According to the given configuration, Rinne creates an IAM user for each GitHub repository with a set of permissions, and stores an access key for the user as GitHub Actions secrets for the repository. The access keys are periodically rotates without invoking the *rinne* command again.
+According to the given configuration, Rinne creates an IAM user for each GitHub repository with a set of permissions, and stores an access key for the user as GitHub Actions secrets for the repository. The access keys are periodically rotated without invoking the `rinne` command again.
+
+## Options
+
+- **--config** _CONFPATH_
+
+  Uses file at _CONFPATH_ as configuration template. This file must be a valid Jsonnet template. Default: "config/rinne.jsonnet"
+
+- **--jpath** _JPATH_
+
+  Tells Rinne to use _JPATH_ as Jsonnet include path when it evaluates the configuration template. This option can be specified multiple times.
+
+- _CDK-OPTION_
+
+  Options applied to `cdk` command. Run `npx cdk --help` to see available options, or [read the manual](https://docs.aws.amazon.com/cdk/latest/guide/tools.html#cli).
 
 ## Configuration
 
@@ -65,6 +79,11 @@ Rinne reads configuraion file written in [Jsonnet templating language](https://j
   },
 }
 ```
+
+## Implementation details
+Rinne is built on top of the [AWS CDK](https://aws.amazon.com/cdk/) and relies on AWS CloudFormation. It evaluates the Jsonnet template to configuration, according to the configuration synthesize a CloudFormation template, and using the template deploys a CloudFormation stack.
+
+The stack will include an IAM user for each of the managed GitHub repositories, with a set of IAM policies. It also contains a Lambda function that rotates the access keys of the IAM users and updates GitHub Actions secrets. The function will be invoked when the stack is deployed and invoked periodically triggered by a CloudWatch event.
 
 ## Further reading
 - Sei Seino, "時載りリンネ! (1) はじまりの本" (_Tokinori Rinne! 1: Hajimari no Hon_), [ISBN 9784044732011](https://sneakerbunko.jp/product/tokinori/200704000021.html)
