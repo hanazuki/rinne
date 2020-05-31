@@ -26,7 +26,7 @@
     "lib/",
     "stdlib/"
   ],
-  "main": "./lib/stack.js",
+  "main": "./lib/index.js",
   "bin": {
     "rinne": "./bin/rinne",
     "rinne-synth": "./bin/rinne-synth"

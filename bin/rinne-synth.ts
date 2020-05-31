@@ -1,10 +1,9 @@
 import 'source-map-support/register';
 import * as path from 'path';
 import * as cdk from '@aws-cdk/core';
-import { Jsonnet } from '@hanazuki/node-jsonnet';
-import { RinneStack } from '..';
+import { RinneStack, RinneConfig } from '..';
 
-const jsonnet = new Jsonnet();
+const config = new RinneConfig();
 
 let conffile: string | null = null;
 
@@ -15,7 +14,7 @@ for (let i = 0; i < args.length; ++i) {
       conffile = args[++i];
       break;
     case '--jpath':
-      jsonnet.addJpath(path.resolve(process.cwd(), args[++i]));
+      config.addJpath(path.resolve(process.cwd(), args[++i]));
       break;
     default:
       console.error(`Unknown option ${args[i]}`);
@@ -23,17 +22,7 @@ for (let i = 0; i < args.length; ++i) {
   }
 }
 
-jsonnet.addJpath(path.resolve(__dirname, '../stdlib'))
-
-jsonnet.extString("aws:account_id", cdk.Aws.ACCOUNT_ID)
-jsonnet.extString("aws:url_suffix", cdk.Aws.URL_SUFFIX)
-jsonnet.extString("aws:partition", cdk.Aws.PARTITION)
-jsonnet.extString("aws:region", cdk.Aws.REGION)
-jsonnet.extString("aws:stack_id", cdk.Aws.STACK_ID)
-jsonnet.extString("aws:stack_name", cdk.Aws.STACK_NAME)
-jsonnet.extString("aws:no_value", cdk.Aws.NO_VALUE)
-
-jsonnet.evaluateFile(conffile ?? 'config/rinne.jsonnet').then(json => {
+config.evaluateFile(conffile ?? 'config/rinne.jsonnet').then(json => {
   const app = new cdk.App();
   const stack = new RinneStack(app, 'Rinne', JSON.parse(json));
   return stack;
