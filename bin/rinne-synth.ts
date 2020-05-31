@@ -23,6 +23,16 @@ for (let i = 0; i < args.length; ++i) {
   }
 }
 
+jsonnet.addJpath(path.resolve(__dirname, '../stdlib'))
+
+jsonnet.extString("aws:account_id", cdk.Aws.ACCOUNT_ID)
+jsonnet.extString("aws:url_suffix", cdk.Aws.URL_SUFFIX)
+jsonnet.extString("aws:partition", cdk.Aws.PARTITION)
+jsonnet.extString("aws:region", cdk.Aws.REGION)
+jsonnet.extString("aws:stack_id", cdk.Aws.STACK_ID)
+jsonnet.extString("aws:stack_name", cdk.Aws.STACK_NAME)
+jsonnet.extString("aws:no_value", cdk.Aws.NO_VALUE)
+
 jsonnet.evaluateFile(conffile ?? 'config/rinne.jsonnet').then(json => {
   const app = new cdk.App();
   const stack = new RinneStack(app, 'Rinne', JSON.parse(json));

@@ -1,3 +1,6 @@
+local rinne = import "stdrinne.libsonnet";
+local account_id = rinne.aws.account_id;
+
 local s3 = import "s3.libsonnet";
 
 {
@@ -14,6 +17,7 @@ local s3 = import "s3.libsonnet";
     'hanazuki/rinne': {
       managedPolicies: [
         'arn:aws:iam::aws:policy/CloudFrontReadOnlyAccess',
+        'arn:aws:iam::%s:policy/CustomerManagedPolicy' % account_id,
       ],
 
       policies: {

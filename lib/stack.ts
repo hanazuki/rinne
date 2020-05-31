@@ -59,13 +59,13 @@ export class RinneStack extends cdk.Stack {
 
     const users: { [name: string]: iam.User } = {};
     for (const [reponame, repo] of Object.entries(props.repositories)) {
-      const user = new iam.User(this, `GH/${reponame}`);
+      const user = new iam.User(this, this.sanitizeForConstructId(`GH/${reponame}`));
       cdk.Tag.add(user, Tags.GitHubRepository, reponame);
 
       if (repo.managedPolicies) {
         for (const polarn of repo.managedPolicies) {
           user.addManagedPolicy(
-            iam.ManagedPolicy.fromManagedPolicyArn(this, `GH/${reponame}/${polarn}`, polarn)
+            iam.ManagedPolicy.fromManagedPolicyArn(this, this.sanitizeForConstructId(`GH/${reponame}/${polarn}`), polarn)
           );
         }
       }
@@ -73,7 +73,7 @@ export class RinneStack extends cdk.Stack {
       if (repo.policies) {
         for (const [polname, stmts] of Object.entries(repo.policies)) {
           user.attachInlinePolicy(
-            new iam.Policy(this, `GH/${reponame}/${polname}`, {
+            new iam.Policy(this, this.sanitizeForConstructId(`GH/${reponame}/${polname}`), {
               policyName: polname,
               statements: stmts.map(iam.PolicyStatement.fromJson),
             })
@@ -172,7 +172,7 @@ export class RinneStack extends cdk.Stack {
         event: events.RuleTargetInput.fromObject(payload),
       }));
 
-      const init = new cfn.CustomResource(this, `Init/${reponame}`, {
+      const init = new cfn.CustomResource(this, this.sanitizeForConstructId(`Init/${reponame}`), {
         provider: initProvider,
         properties: {
           FunctionName: updater.functionName,
@@ -182,5 +182,9 @@ export class RinneStack extends cdk.Stack {
 
       cron.node.addDependency(init);
     }
+  }
+
+  private sanitizeForConstructId(s: string): string {
+    return s.replace(/\$\{([^}]+)\}/g, '--\\1--')
   }
 }

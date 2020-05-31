@@ -20,9 +20,11 @@
     "*.adoc",
     "*.js",
     "*.d.ts",
+    "*.libsonnet",
     "bin/",
     "function/",
-    "lib/"
+    "lib/",
+    "stdlib/"
   ],
   "main": "./lib/stack.js",
   "bin": {
