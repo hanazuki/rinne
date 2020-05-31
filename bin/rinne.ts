@@ -12,7 +12,7 @@ try {
       shellescape([
         process.argv[0],
         path.join(__dirname, 'rinne-synth' + path.extname(process.argv[1])),
-        ...args.synthArgs,
+        ...args.appArgs,
       ]),
       ...args.cdkArgs,
     ],
@@ -25,19 +25,18 @@ try {
   process.exit(e.status);
 }
 
-
 interface Args {
-  synthArgs: string[];
+  appArgs: string[];
   cdkArgs: string[];
 }
 
 function parseArgs(args: string[]): Args {
-  const synthArgs = [];
+  const appArgs = [];
   const cdkArgs = [];
 
   for (let i = 0; i < args.length; ++i) {
     if (args[i] == '--config' || args[i] == '--jpath') {
-      synthArgs.push(args[i], args[i + 1]);
+      appArgs.push(args[i], args[i + 1]);
       ++i;
     } else {
       cdkArgs.push(args[i]);
@@ -45,7 +44,7 @@ function parseArgs(args: string[]): Args {
   }
 
   return {
-    synthArgs,
+    appArgs,
     cdkArgs,
   };
 }
