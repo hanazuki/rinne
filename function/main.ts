@@ -27,7 +27,7 @@ interface Pubkey {
 }
 
 const getPubkey = async (owner: string, repo: string): Promise<Pubkey> => {
-  return (await (await octokit).actions.getPublicKey({ owner, repo })).data;
+  return (await (await octokit).actions.getRepoPublicKey({ owner, repo })).data;
 }
 
 const updateSecret = async (owner: string, repo: string, secret_name: string, value: string, pubkey: Pubkey): Promise<void> => {

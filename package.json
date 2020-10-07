@@ -39,7 +39,7 @@
     "@aws-cdk/aws-ssm": "^1.66.0",
     "@aws-cdk/core": "^1.66.0",
     "@hanazuki/node-jsonnet": "^0.4.0",
-    "@octokit/rest": "^17.6.0",
+    "@octokit/rest": "^18.0.6",
     "@vercel/ncc": "^0.24.1",
     "aws-cdk": "^1.66.0",
     "lodash.sortby": "^4.7.0",
