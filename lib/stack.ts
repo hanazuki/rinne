@@ -95,7 +95,7 @@ export class RinneStack extends cdk.Stack {
       }, this);
 
     const updater = new lambda.Function(this, 'UpdaterFunction', {
-      runtime: lambda.Runtime.NODEJS_10_X,
+      runtime: lambda.Runtime.NODEJS_12_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset(path.join(__dirname, '../ncc.out')),
       memorySize: 1024,
@@ -148,7 +148,7 @@ export class RinneStack extends cdk.Stack {
         code: lambda.Code.fromInline(initHandlerCode),
         handler: 'index.onEvent',
         timeout: cdk.Duration.seconds(60),
-        runtime: lambda.Runtime.NODEJS_10_X,
+        runtime: lambda.Runtime.NODEJS_12_X,
         initialPolicy: [
           new iam.PolicyStatement({
             actions: ['lambda:InvokeFunction'],
