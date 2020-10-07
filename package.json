@@ -32,16 +32,16 @@
     "rinne-synth": "./bin/rinne-synth"
   },
   "dependencies": {
-    "@aws-cdk/aws-events": "^1.36.0",
-    "@aws-cdk/aws-events-targets": "^1.36.0",
-    "@aws-cdk/aws-iam": "^1.36.0",
-    "@aws-cdk/aws-lambda": "^1.36.0",
-    "@aws-cdk/aws-ssm": "^1.36.0",
-    "@aws-cdk/core": "^1.36.0",
+    "@aws-cdk/aws-events": "^1.66.0",
+    "@aws-cdk/aws-events-targets": "^1.66.0",
+    "@aws-cdk/aws-iam": "^1.66.0",
+    "@aws-cdk/aws-lambda": "^1.66.0",
+    "@aws-cdk/aws-ssm": "^1.66.0",
+    "@aws-cdk/core": "^1.66.0",
     "@hanazuki/node-jsonnet": "^0.4.0",
     "@octokit/rest": "^17.6.0",
-    "@zeit/ncc": "^0.22.1",
-    "aws-cdk": "^1.40.0",
+    "@vercel/ncc": "^0.24.1",
+    "aws-cdk": "^1.66.0",
     "lodash.sortby": "^4.7.0",
     "shell-escape": "^0.2.0",
     "source-map-support": "^0.5.19",
@@ -49,10 +49,10 @@
   },
   "devDependencies": {
     "@types/lodash.sortby": "^4.7.6",
-    "@types/node": "^13.13.4",
+    "@types/node": "^13.13.23",
     "@types/shell-escape": "^0.2.0",
-    "ts-node": "^8.10.1",
-    "aws-sdk": "^2.664.0",
-    "typescript": "^3.8.3"
+    "aws-sdk": "^2.768.0",
+    "ts-node": "^8.10.2",
+    "typescript": "^3.9.7"
   }
 }
