@@ -60,7 +60,7 @@ export class RinneStack extends cdk.Stack {
     const users: { [name: string]: iam.User } = {};
     for (const [reponame, repo] of Object.entries(props.repositories)) {
       const user = new iam.User(this, this.sanitizeForConstructId(`GH/${reponame}`));
-      cdk.Tag.add(user, Tags.GitHubRepository, reponame);
+      cdk.Tags.of(user).add(Tags.GitHubRepository, reponame);
 
       if (repo.managedPolicies) {
         for (const polarn of repo.managedPolicies) {
