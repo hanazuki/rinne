@@ -6,6 +6,6 @@
     region: std.extVar('aws:region'),
     stack_id: std.extVar('aws:stack_id'),
     stack_name: std.extVar('aws:stack_name'),
-    no_valud: std.extVar('aws:no_value'),
+    no_value: std.extVar('aws:no_value'),
   },
 }
